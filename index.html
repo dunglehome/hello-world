@@ -1,0 +1,137 @@
+
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie10 lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie10 lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie10 lt-ie9"> <![endif]-->
+<!--[if IE 9]>         <html class="no-js lt-ie10"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+	<title></title>
+    <style>
+	header.projecttitle { width: 1080px; height: 1920px; margin: 0 auto; padding: 0 0; color: #fff; text-shadow: 1px 1px 0 rgba(0,0,0,.3); background: url('image.jpg') #679eba; }
+	</style>
+    	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+
+    <script>
+	/*global Motio */
+jQuery(function ($) {
+	'use strict';
+
+	var windowSpy = new $.Espy(window);
+
+	// ==========================================================================
+	//   Header clouds
+	// ==========================================================================
+	(function () {
+		var header = $('header')[0];
+		var headerClouds = new Motio(header, {
+			fps: 30,
+			speedX: -60,
+			bgWidth: 7300,
+			bgHeight: 1080
+		});
+
+		// Play only when in the viewport
+		windowSpy.add(header, function (entered) {
+			headerClouds[entered ? 'play' : 'pause']();
+		});
+	}());
+
+	// ==========================================================================
+	//   Examples
+	// ==========================================================================
+
+	// Panning
+	(function () {
+		var $example = $('#panning .example');
+		var frame = $example.find('.frame')[0];
+		var offset = $example.offset();
+		var motio = new Motio(frame, {
+			fps: 30,
+			bgWidth: 7300,
+			bgHeight: 1080
+		});
+
+		// Play/Pause when mouse enters/leaves the frame
+		$example.on('mouseenter mouseleave', function (event) {
+			if (event.type === 'mouseenter') {
+				motio.play();
+			} else {
+				motio.pause();
+			}
+		});
+
+		// Update example offset offset on window resize
+		$(window).on('resize', function () {
+			offset = $example.offset();
+		});
+
+		// Update the animation speed & direction based on a cursor position
+		$example.on('mousemove', function (event) {
+			motio.set('speedX', event.pageX - offset.left - motio.width / 2);
+			motio.set('speedY', event.pageY - offset.top - motio.height / 2);
+		});
+	}());
+
+	// Sprite
+	$('a[data-toggle="tab"][href=#sprite]').one('shown', function () {
+		var $example = $('#sprite .example');
+		var frame = $example.find('.frame')[0];
+		var motio = new Motio(frame, {
+			fps: 10,
+			frames: 14
+		});
+
+		// Play when mouse enters the frame, and pause when it leaves
+		$example.on('mouseenter mouseleave', function (event) {
+			motio[event.type === 'mouseenter' ? 'play' : 'pause']();
+		});
+	});
+
+	// 360 view
+	$('a[data-toggle="tab"][href=#circview]').one('shown', function () {
+		var $example = $('#circview .example');
+		var exampleLeft = $example.offset().left;
+		var exampleWidth = $example.width();
+		var frame = $example.find('.frame')[0];
+		var motio = new Motio(frame, {
+			frames: 18
+		});
+
+		// Update example left offset on window resize
+		$(window).on('resize', function () {
+			exampleLeft = $example.offset().left;
+		});
+
+		// Activate frame based on the cursor position
+		$example.on('mousemove', function (event) {
+			motio.to(Math.floor(motio.frames / exampleWidth * (event.pageX - exampleLeft)), true);
+		});
+	});
+});
+	</script>
+</head>
+<body data-repo="darsain/motio" data-metafile="meta.json" style="margin: 0px;">
+
+	<header class="projecttitle">
+	</header>
+
+
+	<div id="content" class="content pagespan">
+
+	</div>
+
+	<footer class="pagespan" data-point="license" data-title="License" style="display: none;">
+		<a id="license" class="license">
+			<i class="icon-refresh icon-spin"></i> Loading license <i class="icon-refresh icon-spin"></i>
+		</a>
+
+		<div id="repos" class="repos" data-display="sly,espy,imagesloaded,fpsmeter">
+		</div>
+	</footer>
+
+	<!-- Scripts -->
+	<script src="http://darsa.in/motio/js/vendor/plugins.js"></script>
+	<script src="http://darsa.in/motio/js/motio.min.js"></script>
+</body>
+</html>
